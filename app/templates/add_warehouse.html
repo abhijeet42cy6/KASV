@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Warehouse - Warewolf</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background-color: #f8f9fa;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 1rem;
+            text-decoration: none;
+            color: #007bff;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            min-height: 100px;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .button.secondary {
+            background-color: #6c757d;
+            margin-right: 0.5rem;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Warewolf</h1>
+        <p>Finding the perfect warehouse space made easy</p>
+    </header>
+    
+    <nav>
+        <a href="/">Home</a>
+        <a href="/warehouse/">Browse Warehouses</a>
+        <a href="/auth/login">Login</a>
+        <a href="/auth/register">Register</a>
+        <a href="/scraping/">Scraping Dashboard</a>
+    </nav>
+    
+    <main>
+        <h2>Add a New Warehouse</h2>
+        <p>List your warehouse for potential clients</p>
+        
+        <div class="form-container">
+            <form action="/warehouse/add" method="post">
+                <div class="form-group">
+                    <label for="title">Warehouse Title</label>
+                    <input type="text" name="title" id="title" required placeholder="e.g., Spacious Warehouse in Delhi">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" name="location" id="location" required placeholder="e.g., Delhi, Sector 5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="area_sqft">Area (sqft)</label>
+                    <input type="number" name="area_sqft" id="area_sqft" required placeholder="e.g., 5000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="price_per_month">Price per Month (INR)</label>
+                    <input type="number" name="price_per_month" id="price_per_month" required placeholder="e.g., 50000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="facilities">Facilities (comma separated)</label>
+                    <input type="text" name="facilities" id="facilities" required placeholder="e.g., 24/7 Security, Loading Dock, Climate Control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="owner_contact">Contact Information</label>
+                    <input type="text" name="owner_contact" id="owner_contact" required placeholder="e.g., email@example.com or phone number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" required placeholder="Describe your warehouse, its features, accessibility, etc."></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <a href="/warehouse/" class="button secondary">Cancel</a>
+                    <button type="submit" class="button">Add Warehouse</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 Warewolf. All rights reserved.</p>
+    </footer>
+</body>
+</html> 

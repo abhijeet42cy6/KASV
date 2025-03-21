@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warewolf - Warehouse Broker Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Warewolf</h1>
+        <p>Finding the perfect warehouse space made easy</p>
+    </header>
+    
+    <nav>
+        <a href="/"><i class="fas fa-home"></i> Home</a>
+        <a href="/warehouse/"><i class="fas fa-warehouse"></i> Browse Warehouses</a>
+        <a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="/auth/register"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="/scraping/"><i class="fas fa-spider"></i> Scraping Dashboard</a>
+    </nav>
+    
+    <main>
+        <section class="hero">
+            <h2>Welcome to Warewolf</h2>
+            <p>We are a broker of brokers who connect warehouse owners with clients seeking the perfect space for their business needs</p>
+            
+            <div class="cta-buttons">
+                <a href="/warehouse/add" class="btn btn-primary"><i class="fas fa-plus"></i> List Your Warehouse</a>
+                <a href="/warehouse/" class="btn btn-outline"><i class="fas fa-search"></i> Find a Warehouse</a>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h3>For Warehouse Owners</h3>
+                <p>List your warehouse properties and connect with potential clients.</p>
+                <ul>
+                    <li>Easy listing process</li>
+                    <li>Showcase property features</li>
+                    <li>Direct client inquiries</li>
+                </ul>
+                <a href="/auth/register" class="btn btn-primary">Register as Owner</a>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-search-location"></i>
+                </div>
+                <h3>For Space Seekers</h3>
+                <p>Find the perfect warehouse space for your business needs.</p>
+                <ul>
+                    <li>Advanced search filters</li>
+                    <li>Detailed property information</li>
+                    <li>Direct owner contact</li>
+                </ul>
+                <a href="/warehouse/search" class="btn btn-primary">Start Searching</a>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>For Brokers</h3>
+                <p>Expand your network and connect with more clients and property owners.</p>
+                <ul>
+                    <li>Access to exclusive listings</li>
+                    <li>Commission opportunities</li>
+                    <li>Broader market reach</li>
+                </ul>
+                <a href="/auth/register" class="btn btn-primary">Join as Broker</a>
+            </div>
+        </section>
+        
+        <section class="container">
+            <h2><i class="fas fa-star"></i> Featured Warehouses</h2>
+            <div class="warehouse-grid">
+                <div class="card">
+                    <div class="warehouse-image">
+                        <span>Premium Warehouse Image</span>
+                    </div>
+                    <div class="warehouse-details">
+                        <h3>Large Storage Space in Delhi</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Delhi, Sector 5</p>
+                        <p><i class="fas fa-ruler-combined"></i> 5000 sqft</p>
+                        <p class="warehouse-price">₹50,000 / month</p>
+                        
+                        <div class="facility-tags">
+                            <span class="facility-tag"><i class="fas fa-shield-alt"></i> 24/7 Security</span>
+                            <span class="facility-tag"><i class="fas fa-truck-loading"></i> Loading Dock</span>
+                            <span class="facility-tag"><i class="fas fa-temperature-low"></i> Climate Control</span>
+                        </div>
+                        
+                        <a href="/warehouse/details/1" class="btn btn-primary btn-block">View Details</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="warehouse-image">
+                        <span>Premium Warehouse Image</span>
+                    </div>
+                    <div class="warehouse-details">
+                        <h3>Small Warehouse in Mumbai</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Mumbai, Andheri</p>
+                        <p><i class="fas fa-ruler-combined"></i> 2000 sqft</p>
+                        <p class="warehouse-price">₹30,000 / month</p>
+                        
+                        <div class="facility-tags">
+                            <span class="facility-tag"><i class="fas fa-video"></i> CCTV</span>
+                            <span class="facility-tag"><i class="fas fa-parking"></i> Parking</span>
+                        </div>
+                        
+                        <a href="/warehouse/details/2" class="btn btn-primary btn-block">View Details</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="warehouse-image">
+                        <span>Premium Warehouse Image</span>
+                    </div>
+                    <div class="warehouse-details">
+                        <h3>Industrial Space in Bangalore</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Bangalore, Electronic City</p>
+                        <p><i class="fas fa-ruler-combined"></i> 7500 sqft</p>
+                        <p class="warehouse-price">₹75,000 / month</p>
+                        
+                        <div class="facility-tags">
+                            <span class="facility-tag"><i class="fas fa-bolt"></i> Power Backup</span>
+                            <span class="facility-tag"><i class="fas fa-fire-extinguisher"></i> Fire Safety</span>
+                            <span class="facility-tag"><i class="fas fa-truck-loading"></i> Loading Bay</span>
+                        </div>
+                        
+                        <a href="/warehouse/details/3" class="btn btn-primary btn-block">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="container">
+            <h2><i class="fas fa-rocket"></i> Why Choose Warewolf?</h2>
+            <div class="row">
+                <div class="col">
+                    <h3><i class="fas fa-check-circle"></i> Verified Listings</h3>
+                    <p>All our warehouse listings are verified for accuracy and authenticity.</p>
+                </div>
+                <div class="col">
+                    <h3><i class="fas fa-rupee-sign"></i> No Brokerage Fees</h3>
+                    <p>Connect directly with owners and save on traditional brokerage costs.</p>
+                </div>
+                <div class="col">
+                    <h3><i class="fas fa-database"></i> Extensive Database</h3>
+                    <p>Access to the largest collection of warehouse listings across India.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Warewolf</h3>
+                <p>Your trusted partner in finding the perfect warehouse space.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/warehouse/">Browse Warehouses</a></li>
+                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/auth/register">Register</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Business Park, New Delhi, India</p>
+                <p><i class="fas fa-phone"></i> +91 9876543210</p>
+                <p><i class="fas fa-envelope"></i> info@warewolf.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Warewolf. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html> 

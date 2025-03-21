@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Warehouses - Warewolf</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background-color: #f8f9fa;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 1rem;
+            text-decoration: none;
+            color: #007bff;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .search-container {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+        }
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        .button-group {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .button.secondary {
+            background-color: #6c757d;
+            margin-right: 0.5rem;
+        }
+        .advanced-search {
+            margin-top: 1rem;
+        }
+        .advanced-search summary {
+            cursor: pointer;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .result-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .result-image {
+            height: 200px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .result-details {
+            padding: 1rem;
+        }
+        .result-price {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+        .result-facilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .facility-tag {
+            background-color: #e9ecef;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        .view-button {
+            display: block;
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            padding: 0.5rem;
+            text-decoration: none;
+            margin-top: 1rem;
+            border-radius: 3px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Warewolf</h1>
+        <p>Finding the perfect warehouse space made easy</p>
+    </header>
+    
+    <nav>
+        <a href="/">Home</a>
+        <a href="/warehouse/">Browse Warehouses</a>
+        <a href="/auth/login">Login</a>
+        <a href="/auth/register">Register</a>
+        <a href="/scraping/">Scraping Dashboard</a>
+    </nav>
+    
+    <main>
+        <h2>Search Warehouses</h2>
+        
+        <div class="search-container">
+            <form action="/warehouse/search" method="post" class="search-form">
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" name="location" id="location" placeholder="City, Area, or Landmark">
+                </div>
+                
+                <div class="form-group">
+                    <label for="min_area">Minimum Area (sqft)</label>
+                    <input type="number" name="min_area" id="min_area" placeholder="e.g., 1000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="max_price">Maximum Price (INR)</label>
+                    <input type="number" name="max_price" id="max_price" placeholder="e.g., 50000">
+                </div>
+                
+                <details class="advanced-search">
+                    <summary>Advanced Search Options</summary>
+                    <div class="form-group">
+                        <label for="facilities">Facilities</label>
+                        <select name="facilities" id="facilities" multiple>
+                            <option value="security">24/7 Security</option>
+                            <option value="loading_dock">Loading Dock</option>
+                            <option value="climate_control">Climate Control</option>
+                            <option value="cctv">CCTV</option>
+                            <option value="parking">Parking</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="availability">Availability</label>
+                        <select name="availability" id="availability">
+                            <option value="">Any</option>
+                            <option value="true">Available Now</option>
+                            <option value="false">Coming Soon</option>
+                        </select>
+                    </div>
+                </details>
+                
+                <div class="button-group">
+                    <button type="reset" class="button secondary">Reset</button>
+                    <button type="submit" class="button">Search</button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="search-results">
+            <h3>Search Results</h3>
+            
+            <div class="no-results">
+                <p>Enter your search criteria and click Search to find warehouses.</p>
+            </div>
+            
+            <!-- Results will be dynamically populated here -->
+            <div class="results-grid" style="display: none;">
+                <!-- Example result card -->
+                <div class="result-card">
+                    <div class="result-image">
+                        <span>Warehouse Image</span>
+                    </div>
+                    <div class="result-details">
+                        <h3>Large Storage Space in Delhi</h3>
+                        <p>Delhi, Sector 5</p>
+                        <p>5000 sqft</p>
+                        <p class="result-price">₹50000 / month</p>
+                        
+                        <div class="result-facilities">
+                            <span class="facility-tag">24/7 Security</span>
+                            <span class="facility-tag">Loading Dock</span>
+                            <span class="facility-tag">Climate Control</span>
+                        </div>
+                        
+                        <a href="/warehouse/details/1" class="view-button">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 Warewolf. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // This would be extended in a real application with AJAX search functionality
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // In a real app, this would send an AJAX request and populate results
+            // For demo purposes, we'll just show the example result
+            e.preventDefault();
+            document.querySelector('.no-results').style.display = 'none';
+            document.querySelector('.results-grid').style.display = 'grid';
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Listings - Warewolf</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Warewolf</h1>
+        <p>Finding the perfect warehouse space made easy</p>
+    </header>
+    
+    <nav>
+        <a href="/"><i class="fas fa-home"></i> Home</a>
+        <a href="/warehouse/"><i class="fas fa-warehouse"></i> Browse Warehouses</a>
+        <a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="/auth/register"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="/scraping/"><i class="fas fa-spider"></i> Scraping Dashboard</a>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <h2><i class="fas fa-warehouse"></i> Available Warehouses</h2>
+            
+            <section class="filters">
+                <form action="/warehouse/search" method="post">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="location">Location</label>
+                                <input type="text" name="location" id="location" class="form-control" placeholder="City, Area or Landmark">
+                            </div>
+                        </div>
+                        
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="min_area">Minimum Area (sqft)</label>
+                                <input type="number" name="min_area" id="min_area" class="form-control" placeholder="e.g., 1000">
+                            </div>
+                        </div>
+                        
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="max_price">Maximum Price (₹)</label>
+                                <input type="number" name="max_price" id="max_price" class="form-control" placeholder="e.g., 50000">
+                            </div>
+                        </div>
+                        
+                        <div class="col" style="display: flex; align-items: flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            
+            <div class="warehouse-grid">
+                {% for warehouse in warehouses %}
+                <div class="card">
+                    <div class="warehouse-image">
+                        <span><i class="fas fa-warehouse fa-3x"></i></span>
+                    </div>
+                    <div class="warehouse-details">
+                        <h3>{{ warehouse.title }}</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ warehouse.location }}</p>
+                        <p><i class="fas fa-ruler-combined"></i> {{ warehouse.area_sqft }} sqft</p>
+                        <p class="warehouse-price">₹{{ warehouse.price_per_month }} / month</p>
+                        
+                        <div class="facility-tags">
+                            {% for facility in warehouse.facilities %}
+                            <span class="facility-tag">{{ facility }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <a href="/warehouse/details/{{ warehouse.id }}" class="btn btn-primary btn-block"><i class="fas fa-info-circle"></i> View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if not warehouses %}
+            <div class="no-results">
+                <i class="fas fa-exclamation-circle fa-3x" style="color: var(--gray); margin-bottom: 1rem;"></i>
+                <h3>No warehouses found</h3>
+                <p>Try adjusting your search filters or <a href="/warehouse/add">list a warehouse</a> yourself.</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Warewolf</h3>
+                <p>Your trusted partner in finding the perfect warehouse space.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/warehouse/">Browse Warehouses</a></li>
+                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/auth/register">Register</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Business Park, New Delhi, India</p>
+                <p><i class="fas fa-phone"></i> +91 9876543210</p>
+                <p><i class="fas fa-envelope"></i> info@warewolf.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Warewolf. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html> 
