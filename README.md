@@ -2,6 +2,25 @@
 
 Warewolf is a web application that connects warehouse owners with space seekers, similar to NoBroker but focused on warehouse properties. The platform serves as a broker-of-brokers, facilitating seamless connections between property owners, clients, and brokers.
 
+## Known Issues and Fixes
+
+### Python 3.12 Compatibility with python-jose
+
+When running on Python 3.12, you might encounter a SyntaxError in the jose.py file:
+
+```
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print(...)?
+```
+
+This is due to Python 2 style print statements in the jose.py file. To fix this issue:
+
+1. Run the included `fix_jose.py` script after installing dependencies:
+   ```
+   python fix_jose.py
+   ```
+
+2. Alternatively, you can manually edit the jose.py file in your virtual environment's site-packages and add parentheses to all print statements.
+
 ## Features
 
 - **For Warehouse Owners:**
