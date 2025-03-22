@@ -64,12 +64,34 @@ This is due to Python 2 style print statements in the jose.py file. To fix this 
    pip install -r requirements.txt
    ```
 
-4. Run the application:
+4. Fix python-jose for Python 3.12 compatibility (if needed):
+   ```
+   python fix_jose.py
+   ```
+
+5. Run the application:
    ```
    uvicorn app.main:app --reload
    ```
+   Or use the provided run.py script:
+   ```
+   python run.py
+   ```
 
-5. Access the application at `http://localhost:8000`
+6. Access the application at `http://localhost:8000`
+
+## Dependencies
+
+The application uses the following key dependencies:
+
+- **FastAPI (0.110.0)**: Modern, high-performance web framework
+- **SQLAlchemy (2.0.27)**: SQL toolkit and ORM
+- **Pydantic (2.5.2)**: Data validation and settings management
+- **Jinja2 (3.1.3)**: Template engine
+- **Python-Jose (3.3.0)**: JSON Web Token implementation
+- **BeautifulSoup4 (4.12.2)**: Web scraping library
+
+See requirements.txt for the full list of dependencies.
 
 ## Usage
 

@@ -46,10 +46,18 @@ class UserCreate(BaseModel):
     gst_number: Optional[str] = None
     business_address: Optional[str] = None
     business_type: Optional[str] = None
+    
+    model_config = {
+        "extra": "forbid"
+    }
 
 class Token(BaseModel):
     access_token: str
     token_type: str
+    
+    model_config = {
+        "extra": "forbid"
+    }
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):

@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request, Form, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import List, Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from ..scrapers import WarehouseScraper
 
 router = APIRouter(prefix="/warehouse", tags=["Warehouse"])
@@ -13,8 +13,12 @@ class OwnerInfo(BaseModel):
     name: str
     phone: str
     email: EmailStr
-    company: Optional[str]
-    gst_number: Optional[str]
+    company: Optional[str] = None
+    gst_number: Optional[str] = None
+    
+    model_config = {
+        "extra": "forbid"
+    }
 
 # Warehouse model with detailed owner information
 class Warehouse(BaseModel):
@@ -28,6 +32,10 @@ class Warehouse(BaseModel):
     description: str
     availability: bool = True
     verified: bool = False
+    
+    model_config = {
+        "extra": "forbid"
+    }
 
 # Temporary database with real-world example data
 warehouses_db = [

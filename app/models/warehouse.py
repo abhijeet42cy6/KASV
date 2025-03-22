@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
 
 
@@ -25,8 +25,8 @@ class Warehouse(BaseModel):
     verified: bool = False
     source: Optional[str] = None  # To track if the warehouse was manually added or scraped
     
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "title": "Large Storage Space in Delhi",
                 "location": "Delhi, Sector 5",
@@ -40,4 +40,5 @@ class Warehouse(BaseModel):
                 },
                 "description": "Spacious warehouse ideal for bulk storage"
             }
-        } 
+        }
+    } 
