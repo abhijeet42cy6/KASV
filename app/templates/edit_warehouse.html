@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Warehouse - Warewolf</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            height: auto;
+            overflow-y: auto !important;
+        }
+        
+        html {
+            height: auto;
+            overflow-y: auto !important;
+        }
+        
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 0.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        nav a {
+            margin: 0 1rem;
+            text-decoration: none;
+            color: #007bff;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 5;
+            height: auto;
+            overflow: visible;
+        }
+        
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            max-height: none;
+            overflow-y: visible;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+        }
+        
+        /* Prevent auto-focus behavior */
+        input:focus, textarea:focus {
+            outline: none;
+        }
+        
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .button.secondary {
+            background-color: #6c757d;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            position: sticky;
+            bottom: 0;
+            background: #f8f9fa;
+            padding: 1rem 0;
+            z-index: 10;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Error styles */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #dc3545;
+        }
+        
+        .form-group.error input:focus,
+        .form-group.error select:focus,
+        .form-group.error textarea:focus {
+            box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Warewolf</h1>
+        <p>Finding the perfect warehouse space made easy</p>
+    </header>
+    
+    <nav>
+        <a href="/">Home</a>
+        <a href="/warehouse/">Browse Warehouses</a>
+        <a href="/auth/login">Login</a>
+        <a href="/auth/register">Register</a>
+        <a href="/scraping/">Scraping Dashboard</a>
+    </nav>
+    
+    <main>
+        <h2>Edit Warehouse Listing</h2>
+        <p>Update your warehouse listing information</p>
+        
+        <div class="form-container">
+            <form action="/warehouse/edit/{{ warehouse.id }}" method="post" novalidate>
+                <div class="form-group {% if errors and errors.get('title') %}error{% endif %}">
+                    <label for="title">Warehouse Title</label>
+                    <input type="text" name="title" id="title" required value="{{ warehouse.title }}">
+                    {% if errors and errors.get('title') %}
+                    <div class="error-message">{{ errors.title }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('location') %}error{% endif %}">
+                    <label for="location">Location</label>
+                    <input type="text" name="location" id="location" required value="{{ warehouse.location }}">
+                    {% if errors and errors.get('location') %}
+                    <div class="error-message">{{ errors.location }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('area_sqft') %}error{% endif %}">
+                    <label for="area_sqft">Area (sqft)</label>
+                    <input type="number" name="area_sqft" id="area_sqft" required value="{{ warehouse.area_sqft }}">
+                    {% if errors and errors.get('area_sqft') %}
+                    <div class="error-message">{{ errors.area_sqft }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('price_per_month') %}error{% endif %}">
+                    <label for="price_per_month">Price per Month (INR)</label>
+                    <input type="number" name="price_per_month" id="price_per_month" required value="{{ warehouse.price_per_month }}">
+                    {% if errors and errors.get('price_per_month') %}
+                    <div class="error-message">{{ errors.price_per_month }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('facilities') %}error{% endif %}">
+                    <label for="facilities">Facilities (comma separated)</label>
+                    <input type="text" name="facilities" id="facilities" required value="{{ facilities_str }}">
+                    {% if errors and errors.get('facilities') %}
+                    <div class="error-message">{{ errors.facilities }}</div>
+                    {% endif %}
+                </div>
+                
+                <h3>Owner Information</h3>
+                
+                <div class="form-group {% if errors and errors.get('owner_name') %}error{% endif %}">
+                    <label for="owner_name">Owner/Contact Name</label>
+                    <input type="text" name="owner_name" id="owner_name" required value="{{ warehouse.owner_info.name }}">
+                    {% if errors and errors.get('owner_name') %}
+                    <div class="error-message">{{ errors.owner_name }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('owner_phone') %}error{% endif %}">
+                    <label for="owner_phone">Phone Number</label>
+                    <input type="text" name="owner_phone" id="owner_phone" required value="{{ warehouse.owner_info.phone }}">
+                    {% if errors and errors.get('owner_phone') %}
+                    <div class="error-message">{{ errors.owner_phone }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('owner_email') %}error{% endif %}">
+                    <label for="owner_email">Email Address</label>
+                    <input type="email" name="owner_email" id="owner_email" required value="{{ warehouse.owner_info.email }}">
+                    {% if errors and errors.get('owner_email') %}
+                    <div class="error-message">{{ errors.owner_email }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('owner_company') %}error{% endif %}">
+                    <label for="owner_company">Company Name (Optional)</label>
+                    <input type="text" name="owner_company" id="owner_company" value="{{ warehouse.owner_info.company or '' }}">
+                    {% if errors and errors.get('owner_company') %}
+                    <div class="error-message">{{ errors.owner_company }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('owner_gst') %}error{% endif %}">
+                    <label for="owner_gst">GST Number (Optional)</label>
+                    <input type="text" name="owner_gst" id="owner_gst" value="{{ warehouse.owner_info.gst_number or '' }}">
+                    {% if errors and errors.get('owner_gst') %}
+                    <div class="error-message">{{ errors.owner_gst }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group {% if errors and errors.get('description') %}error{% endif %}">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" required>{{ warehouse.description }}</textarea>
+                    {% if errors and errors.get('description') %}
+                    <div class="error-message">{{ errors.description }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="button-group">
+                    <a href="{{ url_for('warehouse_details', warehouse_id=warehouse.id) }}" class="button secondary">Cancel</a>
+                    <button type="submit" class="button">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 Warewolf. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Prevent automatic focusing on form fields
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove any autofocus attributes
+            const autofocusElements = document.querySelectorAll('[autofocus]');
+            autofocusElements.forEach(element => {
+                element.removeAttribute('autofocus');
+            });
+            
+            // Ensure the page starts from the top
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+</html> 

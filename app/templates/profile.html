@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block body_class %}profile-page{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title fade-in">Your Profile</h1>
+        
+        <div class="card wolf-watermark">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-circle fa-5x"></i>
+                </div>
+                <div class="profile-info">
+                    <h2>{{ current_user.full_name }}</h2>
+                    <p class="profile-role">{{ current_user.role }}</p>
+                </div>
+            </div>
+            
+            <div class="profile-details">
+                <div class="profile-section">
+                    <h3>Account Information</h3>
+                    <ul class="profile-list">
+                        <li>
+                            <span class="profile-label"><i class="fas fa-user"></i> Username:</span>
+                            <span class="profile-value">{{ current_user.username }}</span>
+                        </li>
+                        <li>
+                            <span class="profile-label"><i class="fas fa-envelope"></i> Email:</span>
+                            <span class="profile-value">{{ current_user.email }}</span>
+                        </li>
+                        <li>
+                            <span class="profile-label"><i class="fas fa-phone"></i> Phone:</span>
+                            <span class="profile-value">{{ current_user.phone }}</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                {% if current_user.role == 'owner' %}
+                <div class="profile-section">
+                    <h3>Business Information</h3>
+                    <ul class="profile-list">
+                        <li>
+                            <span class="profile-label"><i class="fas fa-building"></i> Company:</span>
+                            <span class="profile-value">{{ current_user.company_name or 'Not provided' }}</span>
+                        </li>
+                        <li>
+                            <span class="profile-label"><i class="fas fa-receipt"></i> GST Number:</span>
+                            <span class="profile-value">{{ current_user.gst_number or 'Not provided' }}</span>
+                        </li>
+                        <li>
+                            <span class="profile-label"><i class="fas fa-map-marker-alt"></i> Business Address:</span>
+                            <span class="profile-value">{{ current_user.business_address or 'Not provided' }}</span>
+                        </li>
+                        <li>
+                            <span class="profile-label"><i class="fas fa-th"></i> Business Type:</span>
+                            <span class="profile-value">{{ current_user.business_type or 'Not provided' }}</span>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="profile-actions">
+                <a href="#" class="btn btn-primary wolf-btn">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </a>
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+        
+        {% if current_user.role == 'owner' %}
+        <div class="section mt-4">
+            <h2 class="section-title">Your Warehouses</h2>
+            
+            <div class="grid-3 mt-3">
+                <!-- This would be populated with actual data in a real application -->
+                <div class="card text-center py-5">
+                    <i class="fas fa-warehouse fa-3x mb-3" style="color: var(--text-light);"></i>
+                    <h3>No Warehouses Yet</h3>
+                    <p>You haven't listed any warehouses yet.</p>
+                    <a href="{{ url_for('warehouse_add') }}" class="btn btn-primary wolf-btn mt-3">
+                        <i class="fas fa-plus-circle"></i> Add Your First Warehouse
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %} 

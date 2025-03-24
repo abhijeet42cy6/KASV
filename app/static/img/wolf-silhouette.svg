@@ -1,0 +1,33 @@
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Wolf silhouette with ears, head, and body -->
+  <path d="M150,20 
+           L170,5 L180,15 L190,5 L200,15 
+           C220,25 230,40 235,60
+           C245,70 250,80 250,100
+           C250,120 240,140 220,155
+           L230,165 L220,170
+           L225,180 L215,185
+           L220,195 L210,198
+           C200,200 190,195 180,190
+           C170,195 160,198 150,200
+           C140,198 130,195 120,190
+           C110,195 100,200 90,198
+           L80,195 L85,185
+           L75,180 L80,170
+           L70,165 L80,155
+           C60,140 50,120 50,100
+           C50,80 55,70 65,60
+           C70,40 80,25 100,15
+           L110,5 L120,15 L130,5 L150,20"
+        fill="#333333" fill-opacity="0.8" />
+  
+  <!-- Wolf eyes -->
+  <ellipse cx="120" cy="80" rx="5" ry="7" fill="#d8a25c" fill-opacity="0.9" />
+  <ellipse cx="180" cy="80" rx="5" ry="7" fill="#d8a25c" fill-opacity="0.9" />
+  
+  <!-- Wolf nose -->
+  <path d="M150,100 L140,115 L150,120 L160,115 Z" fill="#333333" fill-opacity="0.9" />
+  
+  <!-- Wolf tail -->
+  <path d="M150,190 C170,220 200,230 240,210" fill="none" stroke="#333333" stroke-width="10" stroke-opacity="0.8" stroke-linecap="round" />
+</svg> 

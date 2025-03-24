@@ -1,198 +1,297 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warewolf - Warehouse Broker Platform</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <header>
-        <h1>Warewolf</h1>
-        <p>Finding the perfect warehouse space made easy</p>
-    </header>
+{% extends "base.html" %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block extra_css %}
+<!-- Critical CSS for index page to prevent staggered loading -->
+<style>
+    .hero {
+        background-color: #121212;
+        color: #f5f5f5;
+        padding: 6rem 0 4rem;
+        position: relative;
+    }
     
-    <nav>
-        <a href="/"><i class="fas fa-home"></i> Home</a>
-        <a href="/warehouse/"><i class="fas fa-warehouse"></i> Browse Warehouses</a>
-        <a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a>
-        <a href="/auth/register"><i class="fas fa-user-plus"></i> Register</a>
-        <a href="/scraping/"><i class="fas fa-spider"></i> Scraping Dashboard</a>
-    </nav>
+    .hero::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at top right, rgba(74, 95, 193, 0.2), transparent 70%);
+        z-index: 0;
+    }
     
-    <main>
-        <section class="hero">
-            <h2>Welcome to Warewolf</h2>
-            <p>We are a broker of brokers who connect warehouse owners with clients seeking the perfect space for their business needs</p>
-            
-            <div class="cta-buttons">
-                <a href="/warehouse/add" class="btn btn-primary"><i class="fas fa-plus"></i> List Your Warehouse</a>
-                <a href="/warehouse/" class="btn btn-outline"><i class="fas fa-search"></i> Find a Warehouse</a>
-            </div>
-        </section>
+    .service-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background-color: rgba(74, 95, 193, 0.1);
+        color: var(--accent);
+        font-size: 24px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .feature-item {
+        padding: 2rem;
+        background-color: rgba(26, 43, 94, 0.1);
+        border-radius: var(--border-radius);
+        border-left: 3px solid var(--accent);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero claw-bg" style="padding: 35px;">
+    <div class="container">
+        <h1 class="fade-in">Find the Perfect Warehouse Space</h1>
+        <p class="fade-in">Warewolf connects businesses with warehouse owners for seamless storage and logistics solutions.</p>
         
-        <section class="features">
-            <div class="feature">
-                <div class="feature-icon">
-                    <i class="fas fa-building"></i>
+        <div class="hero-buttons">
+            {% if current_user %}
+                <a href="{{ url_for('warehouse_add') }}" class="btn btn-primary wolf-btn">
+                    <i class="fas fa-plus-circle"></i> List Your Warehouse
+                </a>
+                <a href="{{ url_for('warehouse_search') }}" class="btn btn-secondary wolf-btn">
+                    <i class="fas fa-search"></i> Find a Warehouse
+                </a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary wolf-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login to List
+                </a>
+                <a href="{{ url_for('warehouse_list') }}" class="btn btn-secondary wolf-btn">
+                    <i class="fas fa-warehouse"></i> Browse Warehouses
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if not current_user %}
+<section class="section">
+    <div class="container">
+        <div class="login-gate wolf-watermark">
+            <h3><i class="fas fa-lock"></i> Login for Full Access</h3>
+            <p>Create an account or log in to access all features including listing your warehouse or viewing detailed information.</p>
+            <p class="mb-3">You can browse as a guest, but will only see limited results.</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('login') }}" class="btn btn-primary wolf-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{{ url_for('register') }}" class="btn btn-secondary wolf-btn">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="section bg-light">
+    <div class="container">
+        <h2 class="section-title">How Warewolf Works</h2>
+        <p class="section-subtitle">Three simple steps to connect with the perfect warehouse</p>
+        
+        <div class="grid-3">
+            <div class="service-item card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-search"></i>
                 </div>
-                <h3>For Warehouse Owners</h3>
-                <p>List your warehouse properties and connect with potential clients.</p>
-                <ul>
-                    <li>Easy listing process</li>
-                    <li>Showcase property features</li>
-                    <li>Direct client inquiries</li>
-                </ul>
-                <a href="/auth/register" class="btn btn-primary">Register as Owner</a>
+                <h3>Search</h3>
+                <p>Browse our extensive database of warehouses with detailed filters for location, size, features, and price.</p>
             </div>
             
-            <div class="feature">
-                <div class="feature-icon">
-                    <i class="fas fa-search-location"></i>
-                </div>
-                <h3>For Space Seekers</h3>
-                <p>Find the perfect warehouse space for your business needs.</p>
-                <ul>
-                    <li>Advanced search filters</li>
-                    <li>Detailed property information</li>
-                    <li>Direct owner contact</li>
-                </ul>
-                <a href="/warehouse/search" class="btn btn-primary">Start Searching</a>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">
+            <div class="service-item card fade-in">
+                <div class="service-icon">
                     <i class="fas fa-handshake"></i>
                 </div>
-                <h3>For Brokers</h3>
-                <p>Expand your network and connect with more clients and property owners.</p>
-                <ul>
-                    <li>Access to exclusive listings</li>
-                    <li>Commission opportunities</li>
-                    <li>Broader market reach</li>
-                </ul>
-                <a href="/auth/register" class="btn btn-primary">Join as Broker</a>
+                <h3>Connect</h3>
+                <p>Contact warehouse owners directly through our secure messaging system to discuss your needs.</p>
             </div>
-        </section>
+            
+            <div class="service-item card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-warehouse"></i>
+                </div>
+                <h3>Move In</h3>
+                <p>Finalize your agreement and move into your new warehouse space with confidence.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Warewolf?</h2>
+        <p class="section-subtitle">The leading warehouse marketplace for businesses</p>
         
-        <section class="container">
-            <h2><i class="fas fa-star"></i> Featured Warehouses</h2>
-            <div class="warehouse-grid">
-                <div class="card">
-                    <div class="warehouse-image">
-                        <span>Premium Warehouse Image</span>
-                    </div>
-                    <div class="warehouse-details">
-                        <h3>Large Storage Space in Delhi</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Delhi, Sector 5</p>
-                        <p><i class="fas fa-ruler-combined"></i> 5000 sqft</p>
-                        <p class="warehouse-price">₹50,000 / month</p>
-                        
-                        <div class="facility-tags">
-                            <span class="facility-tag"><i class="fas fa-shield-alt"></i> 24/7 Security</span>
-                            <span class="facility-tag"><i class="fas fa-truck-loading"></i> Loading Dock</span>
-                            <span class="facility-tag"><i class="fas fa-temperature-low"></i> Climate Control</span>
-                        </div>
-                        
-                        <a href="/warehouse/details/1" class="btn btn-primary btn-block">View Details</a>
-                    </div>
+        <div class="grid-2">
+            <div class="feature-item fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
-                
-                <div class="card">
-                    <div class="warehouse-image">
-                        <span>Premium Warehouse Image</span>
-                    </div>
-                    <div class="warehouse-details">
-                        <h3>Small Warehouse in Mumbai</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Mumbai, Andheri</p>
-                        <p><i class="fas fa-ruler-combined"></i> 2000 sqft</p>
-                        <p class="warehouse-price">₹30,000 / month</p>
-                        
-                        <div class="facility-tags">
-                            <span class="facility-tag"><i class="fas fa-video"></i> CCTV</span>
-                            <span class="facility-tag"><i class="fas fa-parking"></i> Parking</span>
-                        </div>
-                        
-                        <a href="/warehouse/details/2" class="btn btn-primary btn-block">View Details</a>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="warehouse-image">
-                        <span>Premium Warehouse Image</span>
-                    </div>
-                    <div class="warehouse-details">
-                        <h3>Industrial Space in Bangalore</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Bangalore, Electronic City</p>
-                        <p><i class="fas fa-ruler-combined"></i> 7500 sqft</p>
-                        <p class="warehouse-price">₹75,000 / month</p>
-                        
-                        <div class="facility-tags">
-                            <span class="facility-tag"><i class="fas fa-bolt"></i> Power Backup</span>
-                            <span class="facility-tag"><i class="fas fa-fire-extinguisher"></i> Fire Safety</span>
-                            <span class="facility-tag"><i class="fas fa-truck-loading"></i> Loading Bay</span>
-                        </div>
-                        
-                        <a href="/warehouse/details/3" class="btn btn-primary btn-block">View Details</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section class="container">
-            <h2><i class="fas fa-rocket"></i> Why Choose Warewolf?</h2>
-            <div class="row">
-                <div class="col">
-                    <h3><i class="fas fa-check-circle"></i> Verified Listings</h3>
-                    <p>All our warehouse listings are verified for accuracy and authenticity.</p>
-                </div>
-                <div class="col">
-                    <h3><i class="fas fa-rupee-sign"></i> No Brokerage Fees</h3>
-                    <p>Connect directly with owners and save on traditional brokerage costs.</p>
-                </div>
-                <div class="col">
-                    <h3><i class="fas fa-database"></i> Extensive Database</h3>
-                    <p>Access to the largest collection of warehouse listings across India.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-    
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Warewolf</h3>
-                <p>Your trusted partner in finding the perfect warehouse space.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
+                <div>
+                    <h3>Verified Listings</h3>
+                    <p>All warehouse listings undergo verification to ensure accurate information and prevent fraud.</p>
                 </div>
             </div>
             
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/warehouse/">Browse Warehouses</a></li>
-                    <li><a href="/auth/login">Login</a></li>
-                    <li><a href="/auth/register">Register</a></li>
-                </ul>
+            <div class="feature-item fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <div>
+                    <h3>Fast Matching</h3>
+                    <p>Our intelligent matching algorithm connects you with the most suitable warehouses for your specific needs.</p>
+                </div>
             </div>
             
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p><i class="fas fa-map-marker-alt"></i> 123 Warehouse District, Mumbai, Maharashtra 400001, India</p>
-                <p><i class="fas fa-phone"></i> +91 62025 35531</p>
-                <p><i class="fas fa-envelope"></i> abhishek@warewolf.space</p>
+            <div class="feature-item fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <h3>Transparent Pricing</h3>
+                    <p>Clear pricing information with no hidden fees, helping you stay within budget.</p>
+                </div>
+            </div>
+            
+            <div class="feature-item fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h3>24/7 Availability</h3>
+                    <p>Browse, message, and manage your warehouse listings anytime, anywhere through our platform.</p>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Warewolf. All rights reserved.</p>
-            <p>Founded by <span class="font-semibold">Abhishek Kumar</span>, Founder & CEO</p>
+    </div>
+</section>
+
+<section class="section claw-bg">
+    <div class="container wolf-watermark">
+        <h2 class="section-title">Featured Warehouses</h2>
+        <p class="section-subtitle">Discover our top warehouse listings</p>
+        
+        <div class="grid-3">
+            <!-- This would dynamically load from backend in production -->
+            <div class="warehouse-card card fade-in">
+                <img src="{{ url_for('static', path='/img/placeholder1.jpg') }}" alt="Warehouse" onerror="this.src='https://via.placeholder.com/400x250?text=Warehouse'">
+                <div class="warehouse-card-content">
+                    <h3>Premium Storage Facility</h3>
+                    <div class="warehouse-location">
+                        <i class="fas fa-map-marker-alt"></i> Mumbai, Maharashtra
+                    </div>
+                    <div class="warehouse-specs">
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">5,000</span>
+                            <span class="warehouse-spec-label">sq.ft</span>
+                        </div>
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">24/7</span>
+                            <span class="warehouse-spec-label">Access</span>
+                        </div>
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">A/C</span>
+                            <span class="warehouse-spec-label">Climate</span>
+                        </div>
+                    </div>
+                    <div class="warehouse-price">
+                        ₹45<span>/sq.ft/month</span>
+                    </div>
+                    <a href="#" class="btn btn-primary btn-block wolf-btn">View Details</a>
+                </div>
+            </div>
+            
+            <div class="warehouse-card card fade-in">
+                <img src="{{ url_for('static', path='/img/placeholder2.jpg') }}" alt="Warehouse" onerror="this.src='https://via.placeholder.com/400x250?text=Warehouse'">
+                <div class="warehouse-card-content">
+                    <h3>Industrial Warehouse</h3>
+                    <div class="warehouse-location">
+                        <i class="fas fa-map-marker-alt"></i> Delhi, NCR
+                    </div>
+                    <div class="warehouse-specs">
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">10,000</span>
+                            <span class="warehouse-spec-label">sq.ft</span>
+                        </div>
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">12hr</span>
+                            <span class="warehouse-spec-label">Access</span>
+                        </div>
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">Dock</span>
+                            <span class="warehouse-spec-label">Loading</span>
+                        </div>
+                    </div>
+                    <div class="warehouse-price">
+                        ₹35<span>/sq.ft/month</span>
+                    </div>
+                    <a href="#" class="btn btn-primary btn-block wolf-btn">View Details</a>
+                </div>
+            </div>
+            
+            <div class="warehouse-card card fade-in">
+                <img src="{{ url_for('static', path='/img/placeholder3.jpg') }}" alt="Warehouse" onerror="this.src='https://via.placeholder.com/400x250?text=Warehouse'">
+                <div class="warehouse-card-content">
+                    <h3>Logistics Hub</h3>
+                    <div class="warehouse-location">
+                        <i class="fas fa-map-marker-alt"></i> Bangalore, Karnataka
+                    </div>
+                    <div class="warehouse-specs">
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">7,500</span>
+                            <span class="warehouse-spec-label">sq.ft</span>
+                        </div>
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">24/7</span>
+                            <span class="warehouse-spec-label">Access</span>
+                        </div>
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">3</span>
+                            <span class="warehouse-spec-label">Floors</span>
+                        </div>
+                    </div>
+                    <div class="warehouse-price">
+                        ₹50<span>/sq.ft/month</span>
+                    </div>
+                    <a href="{{ url_for('warehouse_details', warehouse_id=1) }}" class="btn btn-primary btn-block wolf-btn">View Details</a>
+                </div>
+            </div>
         </div>
-    </footer>
-</body>
-</html> 
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('warehouse_list') }}" class="btn btn-secondary wolf-btn">
+                <i class="fas fa-th-list"></i> View All Warehouses
+            </a>
+        </div>
+    </div>
+</section>
+
+{% if not current_user %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Join Warewolf Today</h2>
+        <p class="section-subtitle">Start finding or listing warehouse spaces in minutes</p>
+        
+        <div class="cta-container text-center">
+            <a href="{{ url_for('register') }}" class="btn btn-highlight wolf-btn">
+                <i class="fas fa-user-plus"></i> Create Your Account
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %} 

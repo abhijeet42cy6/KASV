@@ -1,0 +1,83 @@
+/* Warewolf Special Effects CSS */
+
+/* Claw Marks Background Effect */
+.claw-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.claw-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../img/claw-marks.svg');
+  background-size: cover;
+  opacity: 0.03;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Wolf Silhouette Watermark */
+.wolf-watermark {
+  position: relative;
+}
+
+.wolf-watermark::after {
+  content: '';
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  width: 180px;
+  height: 120px;
+  background-image: url('../img/wolf-silhouette.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Glowing Wolf Eyes Effect for Buttons */
+.wolf-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.wolf-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 5px;
+  height: 5px;
+  background-color: #d8a25c;
+  border-radius: 50%;
+  box-shadow: 0 0 5px 2px rgba(216, 162, 92, 0.4);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease;
+}
+
+.wolf-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 25px;
+  width: 5px;
+  height: 5px;
+  background-color: #d8a25c;
+  border-radius: 50%;
+  box-shadow: 0 0 5px 2px rgba(216, 162, 92, 0.4);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease;
+}
+
+.wolf-btn:hover::before,
+.wolf-btn:hover::after {
+  opacity: 0.8;
+} 

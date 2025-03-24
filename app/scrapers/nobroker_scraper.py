@@ -1,6 +1,7 @@
 import requests
 import time
 import random
+import string
 from typing import List, Dict, Any, Optional
 import logging
 from .base_scraper import BaseScraper
@@ -36,6 +37,17 @@ class NoBrokerScraper(BaseScraper):
             "ahmedabad": 10
         }
         return city_map.get(city.lower(), 1)  # Default to Mumbai if city not found
+    
+    def _generate_valid_gst(self) -> str:
+        """Generate a valid GST number for India"""
+        # Format: 2 digits + 5 chars + 4 digits + 1 char + 1 char + Z + 1 char
+        state_code = random.randint(1, 36)  # State codes from 01 to 36
+        pan = ''.join(random.choices(string.ascii_uppercase, k=5))
+        entity_num = ''.join(random.choices(string.digits, k=4))
+        blank = random.choice(string.ascii_uppercase)
+        check = random.choice(string.ascii_uppercase[1:] + string.digits[1:])  # Cannot be 0 or A
+        
+        return f"{state_code:02d}{pan}{entity_num}{blank}{check}Z{random.choice(string.digits)}"
     
     def scrape_warehouses(
         self, 
@@ -89,24 +101,33 @@ class NoBrokerScraper(BaseScraper):
         
         # Instead, we'll generate sample data for demonstration
         for i in range(1, 10):
-            # Generate owner info
+            # Generate owner info with valid Indian phone numbers
+            # Valid format: +91 followed by a 10-digit number starting with 6-9
             owner_info = {
                 'name': f"Sample Owner {i}",
-                'phone': f"+91-98765{i}3210",
+                'phone': f"+91{random.randint(6,9)}{random.randint(100000000,999999999)}",
                 'email': f"owner{i}@example.com",
                 'company': f"Company {i} Ltd",
-                'gst_number': f"GST123456{i}" if i % 2 == 0 else None
+                'gst_number': self._generate_valid_gst() if i % 2 == 0 else None
             }
+            
+            # Generate a realistic description with at least 50 characters (minimum length required)
+            description = f"""
+            This is a spacious warehouse located in {city}, Area {i}. The property offers excellent 
+            connectivity to major highways and transportation hubs. It features modern infrastructure 
+            with {random.choice(['24/7 security', 'climate control', 'loading docks', 'parking space'])}.
+            Ideal for storage, distribution, and logistics operations with {random.randint(10, 30)} feet ceiling height.
+            """
             
             warehouse = {
                 "id": i,
-                "title": f"Sample Warehouse {i} in {city}",
-                "location": f"{city}, Area {i}",
+                "title": f"Premium Warehouse Space in {city} Area {i}",
+                "location": f"{city}, Area {i}, Industrial Zone",
                 "area_sqft": random.randint(1000, 10000),
                 "price_per_month": random.randint(20000, 100000),
                 "facilities": self._generate_random_facilities(),
                 "owner_info": owner_info,
-                "description": f"Scraped warehouse listing {i} with good connectivity",
+                "description": description.strip(),
                 "availability": True,
                 "verified": False
             }
@@ -163,10 +184,10 @@ class NoBrokerScraper(BaseScraper):
         contact = data.get("contactDetails", {})
         owner_info = {
             "name": contact.get("name", "Verification Needed"),
-            "phone": contact.get("phone", "Contact Admin"),
+            "phone": contact.get("phone", "+919876543210"),  # Valid format
             "email": contact.get("email", "admin@warewolf.com"),
             "company": contact.get("company"),
-            "gst_number": contact.get("gstNumber")
+            "gst_number": contact.get("gstNumber", self._generate_valid_gst() if random.choice([True, False]) else None)
         }
         
         warehouse_info["owner_info"] = owner_info
@@ -184,6 +205,7 @@ class NoBrokerScraper(BaseScraper):
         )
         
         return Warehouse(
+            id=data.get('id'),
             title=data['title'],
             location=data['location'],
             area_sqft=data['area_sqft'],
@@ -192,5 +214,6 @@ class NoBrokerScraper(BaseScraper):
             owner_info=owner_info,
             description=data['description'],
             availability=data['availability'],
-            verified=data['verified']
+            verified=data['verified'],
+            creator_username=data.get('creator_username')
         ) 

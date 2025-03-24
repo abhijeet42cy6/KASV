@@ -1,0 +1,38 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- First set of claw marks -->
+  <g opacity="0.7" stroke="#333333" stroke-width="1.5" fill="none">
+    <path d="M50,50 C100,150 150,200 200,300" stroke-opacity="0.1" />
+    <path d="M60,50 C110,150 160,200 210,300" stroke-opacity="0.1" />
+    <path d="M70,50 C120,150 170,200 220,300" stroke-opacity="0.1" />
+    <path d="M80,50 C130,150 180,200 230,300" stroke-opacity="0.1" />
+  </g>
+  
+  <!-- Second set of claw marks -->
+  <g opacity="0.6" stroke="#333333" stroke-width="1.5" fill="none">
+    <path d="M400,200 C450,250 500,300 550,400" stroke-opacity="0.08" />
+    <path d="M410,200 C460,250 510,300 560,400" stroke-opacity="0.08" />
+    <path d="M420,200 C470,250 520,300 570,400" stroke-opacity="0.08" />
+  </g>
+  
+  <!-- Third set of claw marks -->
+  <g opacity="0.5" stroke="#333333" stroke-width="2" fill="none">
+    <path d="M700,100 C650,180 600,250 580,350" stroke-opacity="0.07" />
+    <path d="M710,100 C660,180 610,250 590,350" stroke-opacity="0.07" />
+    <path d="M720,100 C670,180 620,250 600,350" stroke-opacity="0.07" />
+    <path d="M730,100 C680,180 630,250 610,350" stroke-opacity="0.07" />
+  </g>
+  
+  <!-- Bottom right corner set -->
+  <g opacity="0.4" stroke="#333333" stroke-width="1.5" fill="none">
+    <path d="M600,500 C650,450 700,400 750,300" stroke-opacity="0.06" />
+    <path d="M610,500 C660,450 710,400 760,300" stroke-opacity="0.06" />
+    <path d="M620,500 C670,450 720,400 770,300" stroke-opacity="0.06" />
+  </g>
+  
+  <!-- Bottom left corner set -->
+  <g opacity="0.4" stroke="#333333" stroke-width="1" fill="none">
+    <path d="M200,550 C150,500 100,450 50,400" stroke-opacity="0.05" />
+    <path d="M210,550 C160,500 110,450 60,400" stroke-opacity="0.05" />
+    <path d="M220,550 C170,500 120,450 70,400" stroke-opacity="0.05" />
+  </g>
+</svg> 

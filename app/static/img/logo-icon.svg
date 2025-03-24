@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Dark blue background -->
+  <rect width="64" height="64" fill="#1a2b5e" rx="5" ry="5"/>
+  
+  <!-- Geometric W design - angular modern style -->
+  <path d="M12 16 L22 48 L32 26 L42 48 L52 16" stroke="#f5f5f5" stroke-width="5" fill="none"/>
+  
+  <!-- Simplified warehouse roof -->
+  <path d="M20 54 L32 44 L44 54" stroke="#4a5fc1" stroke-width="3" fill="none"/>
+</svg> 

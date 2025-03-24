@@ -11,6 +11,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from sqlalchemy.orm import Session
 import logging
+from datetime import datetime
 
 # Set up logger
 logging.basicConfig(level=logging.INFO)
@@ -27,6 +28,8 @@ app = FastAPI(title="Warewolf", description="Warehouse broker platform")
 
 # Templates configuration
 templates = Jinja2Templates(directory="app/templates")
+# Fix the now function in Jinja2 environment by making it callable
+templates.env.globals["now"] = lambda: datetime.now()
 
 # Configure CORS
 app.add_middleware(
@@ -43,9 +46,18 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # Custom middleware to add current_user to request state
 class AuthenticationMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        print(f"[DEBUG] Authentication middleware processing {request.url.path}")
+        
+        # First, set request.state.current_user to None (default state)
+        request.state.current_user = None
+        
         try:
             # Get DB session
             db = next(get_db())
+            
+            # Check cookie for token 
+            token = request.cookies.get("access_token")
+            print(f"[DEBUG] Access token in cookie: {'Present' if token else 'None'}")
             
             # Check for user in cookie
             current_user = await auth.get_current_user_from_cookie(request, db)
@@ -55,19 +67,25 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             
             # Log authentication status
             if current_user:
+                print(f"[DEBUG] User authenticated as: {current_user.username}")
                 logger.info(f"User authenticated: {current_user.username}")
             else:
+                print(f"[DEBUG] No user authenticated for {request.url.path}")
                 logger.info("No user authenticated")
-                
-            # Process request
-            response = await call_next(request)
-            
-            return response
         except Exception as e:
             logger.error(f"Error in authentication middleware: {str(e)}")
-            # Continue with no user
-            request.state.current_user = None
-            return await call_next(request)
+            print(f"[DEBUG] Authentication error: {str(e)}")
+            # Don't reset current_user here, as we want to keep it if set
+                
+        # Process request - outside the try/except block to ensure it always runs
+        try:
+            response = await call_next(request)
+            return response
+        except Exception as e:
+            logger.error(f"Error processing request: {str(e)}")
+            print(f"[DEBUG] Request processing error: {str(e)}")
+            # Re-raise to let FastAPI handle it
+            raise
 
 app.add_middleware(AuthenticationMiddleware)
 
@@ -94,7 +112,7 @@ app.include_router(auth.router)
 app.include_router(warehouse.router)
 app.include_router(scraping.router)
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, name="index")
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "current_user": request.state.current_user})
 

@@ -1,142 +1,344 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ warehouse.title }} - Warewolf</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <header>
-        <h1>Warewolf</h1>
-        <p>Finding the perfect warehouse space made easy</p>
-    </header>
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .back-link {
+        margin-bottom: 2rem;
+        display: inline-block;
+        color: var(--muted-text);
+        transition: var(--transition);
+    }
     
-    <nav>
-        <a href="/"><i class="fas fa-home"></i> Home</a>
-        <a href="/warehouse/"><i class="fas fa-warehouse"></i> Browse Warehouses</a>
-        <a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a>
-        <a href="/auth/register"><i class="fas fa-user-plus"></i> Register</a>
-        <a href="/scraping/"><i class="fas fa-spider"></i> Scraping Dashboard</a>
-    </nav>
+    .back-link:hover {
+        color: var(--light-text);
+    }
     
-    <main>
-        <div class="back-link" style="margin-bottom: 1rem;">
-            <a href="/warehouse/"><i class="fas fa-arrow-left"></i> Back to Listings</a>
+    .warehouse-header {
+        margin-bottom: 2rem;
+    }
+    
+    .warehouse-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--light-text);
+    }
+    
+    .warehouse-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--muted-text);
+        font-size: 1.1rem;
+    }
+    
+    .details-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .main-image {
+        width: 100%;
+        height: 350px;
+        background-color: var(--dark-bg);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .main-image i {
+        font-size: 4rem;
+        color: var(--muted-text);
+        opacity: 0.5;
+    }
+    
+    .thumbnails {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .thumbnail {
+        width: 100%;
+        height: 80px;
+        background-color: var(--dark-bg);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .thumbnail:hover {
+        background-color: var(--light);
+    }
+    
+    .thumbnail i {
+        color: var(--muted-text);
+        font-size: 1.25rem;
+    }
+    
+    .info-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .price-tag {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--light-text);
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+    }
+    
+    .price-unit {
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--muted-text);
+    }
+    
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .spec-item {
+        background-color: var(--dark-bg);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .spec-label {
+        color: var(--muted-text);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .spec-value {
+        font-weight: 600;
+        color: var(--light-text);
+        font-size: 1.1rem;
+    }
+    
+    .facilities-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .facilities-section h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: var(--light-text);
+    }
+    
+    .facility-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    
+    .contact-box {
+        background-color: var(--dark-bg);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        border-left: 3px solid var(--accent);
+    }
+    
+    .contact-box h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: var(--light-text);
+    }
+    
+    .contact-info {
+        color: var(--muted-text);
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .manage-section {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--secondary);
+    }
+    
+    .description-section {
+        margin-bottom: 3rem;
+    }
+    
+    .description-section h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: var(--light-text);
+    }
+    
+    .description-content {
+        color: var(--muted-text);
+        line-height: 1.6;
+    }
+    
+    .map-container {
+        height: 300px;
+        background-color: var(--dark-bg);
+        border-radius: var(--border-radius);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+    
+    .map-placeholder {
+        font-size: 3rem;
+        color: var(--muted-text);
+        opacity: 0.5;
+    }
+    
+    .map-text {
+        color: var(--muted-text);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{{ url_for('warehouse_list') }}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Listings
+    </a>
+    
+    <div class="warehouse-header">
+        <h1 class="warehouse-title">{{ warehouse.title }}</h1>
+        <p class="warehouse-location">
+            <i class="fas fa-map-marker-alt"></i> {{ warehouse.location }}
+        </p>
+    </div>
+    
+    <div class="details-container">
+        <div class="gallery">
+            <div class="main-image">
+                <img src="{{ url_for('static', path='/img/warehouse-sample-1.jpg') }}" alt="{{ warehouse.title }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-warehouse\'></i>';">
+            </div>
+            
+            <div class="thumbnails">
+                <div class="thumbnail">
+                    <i class="fas fa-warehouse"></i>
+                </div>
+                <div class="thumbnail">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div class="thumbnail">
+                    <i class="fas fa-truck-loading"></i>
+                </div>
+                <div class="thumbnail">
+                    <i class="fas fa-ruler-combined"></i>
+                </div>
+            </div>
         </div>
         
-        <div class="container">
-            <h2>{{ warehouse.title }}</h2>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> {{ warehouse.location }}</p>
+        <div class="info-panel">
+            <div class="price-tag">
+                ₹{{ warehouse.price_per_month }} <span class="price-unit">per month</span>
+            </div>
             
-            <div class="warehouse-details-container" style="display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2rem;">
-                <div class="warehouse-images" style="flex: 1; min-width: 300px;">
-                    <div class="main-image" style="width: 100%; height: 400px; background-color: #eee; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; border-radius: var(--border-radius);">
-                        <i class="fas fa-warehouse fa-5x" style="color: var(--gray);"></i>
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <div class="spec-label">
+                        <i class="fas fa-ruler-combined"></i> Area
                     </div>
-                    <div class="thumbnail-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
-                        <div class="thumbnail" style="height: 80px; background-color: #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: var(--border-radius);">
-                            <i class="fas fa-warehouse"></i>
-                        </div>
-                        <div class="thumbnail" style="height: 80px; background-color: #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: var(--border-radius);">
-                            <i class="fas fa-door-open"></i>
-                        </div>
-                        <div class="thumbnail" style="height: 80px; background-color: #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: var(--border-radius);">
-                            <i class="fas fa-truck-loading"></i>
-                        </div>
-                        <div class="thumbnail" style="height: 80px; background-color: #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: var(--border-radius);">
-                            <i class="fas fa-ruler-combined"></i>
-                        </div>
-                    </div>
+                    <div class="spec-value">{{ warehouse.area_sqft }} sqft</div>
                 </div>
                 
-                <div class="warehouse-info" style="flex: 1; min-width: 300px;">
-                    <div class="warehouse-price" style="font-size: 1.8rem; font-weight: bold; color: var(--primary); margin: 1rem 0;">
-                        ₹{{ warehouse.price_per_month }} <span style="font-size: 1rem; color: var(--gray);">per month</span>
+                <div class="spec-item">
+                    <div class="spec-label">
+                        <i class="fas fa-building"></i> Type
                     </div>
-                    
-                    <div class="property-details" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
-                        <div class="property-detail" style="padding: 1rem; background-color: var(--light); border-radius: var(--border-radius);">
-                            <h4 style="margin-top: 0; color: var(--gray);"><i class="fas fa-ruler-combined"></i> Area</h4>
-                            <p style="margin-bottom: 0; font-weight: bold;">{{ warehouse.area_sqft }} sqft</p>
-                        </div>
-                        <div class="property-detail" style="padding: 1rem; background-color: var(--light); border-radius: var(--border-radius);">
-                            <h4 style="margin-top: 0; color: var(--gray);"><i class="fas fa-building"></i> Type</h4>
-                            <p style="margin-bottom: 0; font-weight: bold;">Warehouse</p>
-                        </div>
-                        <div class="property-detail" style="padding: 1rem; background-color: var(--light); border-radius: var(--border-radius);">
-                            <h4 style="margin-top: 0; color: var(--gray);"><i class="fas fa-calendar-check"></i> Availability</h4>
-                            <p style="margin-bottom: 0; font-weight: bold; color: {% if warehouse.availability %}var(--success){% else %}var(--danger){% endif %};">
-                                {% if warehouse.availability %}Available Now{% else %}Not Available{% endif %}
-                            </p>
-                        </div>
+                    <div class="spec-value">Warehouse</div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-label">
+                        <i class="fas fa-calendar-check"></i> Availability
                     </div>
-                    
-                    <div class="facilities" style="margin: 1.5rem 0;">
-                        <h3><i class="fas fa-clipboard-list"></i> Facilities</h3>
-                        <div class="facility-tags">
-                            {% for facility in warehouse.facilities %}
-                            <span class="facility-tag">{{ facility }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="contact-box" style="background-color: var(--light); border-radius: var(--border-radius); padding: 1.5rem; margin-top: 1.5rem;">
-                        <h3><i class="fas fa-user"></i> Contact Information</h3>
-                        <p style="margin-bottom: 1.5rem;">{{ warehouse.owner_contact }}</p>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <a href="mailto:{{ warehouse.owner_contact }}" class="btn btn-primary"><i class="fas fa-envelope"></i> Send Email</a>
-                            <a href="tel:{{ warehouse.owner_contact }}" class="btn btn-outline"><i class="fas fa-phone"></i> Call Owner</a>
-                        </div>
+                    <div class="spec-value" style="color: {% if warehouse.availability %}var(--accent){% else %}#dc3545{% endif %};">
+                        {% if warehouse.availability %}Available Now{% else %}Not Available{% endif %}
                     </div>
                 </div>
             </div>
             
-            <div class="description" style="margin: 2rem 0;">
-                <h3><i class="fas fa-info-circle"></i> Description</h3>
-                <p>{{ warehouse.description }}</p>
+            <div class="facilities-section">
+                <h3><i class="fas fa-clipboard-list"></i> Facilities</h3>
+                <div class="facility-tags">
+                    {% for facility in warehouse.facilities %}
+                    <span class="facility-tag">{{ facility }}</span>
+                    {% endfor %}
+                </div>
             </div>
             
-            <div class="map-container" style="height: 300px; background-color: var(--light); margin: 2rem 0; display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius);">
-                <span><i class="fas fa-map-marked-alt fa-3x" style="color: var(--gray);"></i> <br>Location Map</span>
+            <div class="contact-box">
+                <h3><i class="fas fa-user"></i> Contact Information</h3>
+                <p class="contact-info">{{ warehouse.owner_contact }}</p>
+                <div class="contact-actions">
+                    <a href="mailto:{{ warehouse.owner_contact }}" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="tel:{{ warehouse.owner_contact }}" class="btn btn-outline">
+                        <i class="fas fa-phone"></i> Call
+                    </a>
+                </div>
+                
+                {% if is_creator %}
+                <div class="manage-section">
+                    <h3><i class="fas fa-cog"></i> Manage Listing</h3>
+                    <p style="color: var(--muted-text); margin-bottom: 1rem;">
+                        You created this listing. You can manage it below:
+                    </p>
+                    <a href="/warehouse/edit/{{ warehouse.id }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit Listing
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
-    </main>
+    </div>
     
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Warewolf</h3>
-                <p>Your trusted partner in finding the perfect warehouse space.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/warehouse/">Browse Warehouses</a></li>
-                    <li><a href="/auth/login">Login</a></li>
-                    <li><a href="/auth/register">Register</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p><i class="fas fa-map-marker-alt"></i> 123 Business Park, New Delhi, India</p>
-                <p><i class="fas fa-phone"></i> +91 9876543210</p>
-                <p><i class="fas fa-envelope"></i> info@warewolf.com</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2023 Warewolf. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-</html> 
+    <div class="description-section">
+        <h3><i class="fas fa-info-circle"></i> Description</h3>
+        <div class="description-content">{{ warehouse.description }}</div>
+    </div>
+    
+    <div class="map-container">
+        <i class="fas fa-map-marked-alt map-placeholder"></i>
+        <span class="map-text">Location Map</span>
+    </div>
+</div>
+{% endblock %} 

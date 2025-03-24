@@ -1,128 +1,292 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Listings - Warewolf</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <header>
-        <h1>Warewolf</h1>
-        <p>Finding the perfect warehouse space made easy</p>
-    </header>
-    
-    <nav>
-        <a href="/"><i class="fas fa-home"></i> Home</a>
-        <a href="/warehouse/"><i class="fas fa-warehouse"></i> Browse Warehouses</a>
-        <a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Login</a>
-        <a href="/auth/register"><i class="fas fa-user-plus"></i> Register</a>
-        <a href="/scraping/"><i class="fas fa-spider"></i> Scraping Dashboard</a>
-    </nav>
-    
-    <main>
-        <div class="container">
-            <h2><i class="fas fa-warehouse"></i> Available Warehouses</h2>
-            
-            <section class="filters">
-                <form action="/warehouse/search" method="post">
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="location">Location</label>
-                                <input type="text" name="location" id="location" class="form-control" placeholder="City, Area or Landmark">
-                            </div>
-                        </div>
-                        
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="min_area">Minimum Area (sqft)</label>
-                                <input type="number" name="min_area" id="min_area" class="form-control" placeholder="e.g., 1000">
-                            </div>
-                        </div>
-                        
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="max_price">Maximum Price (₹)</label>
-                                <input type="number" name="max_price" id="max_price" class="form-control" placeholder="e.g., 50000">
-                            </div>
-                        </div>
-                        
-                        <div class="col" style="display: flex; align-items: flex-end;">
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
-                        </div>
+{% extends "base.html" %}
+
+{% block title %}Browse Warehouses - Warewolf{% endblock %}
+
+{% block body_class %}warehouse-list-page{% endblock %}
+
+{% block content %}
+<section class="section claw-bg">
+    <div class="container">
+        <h1 class="section-title fade-in">
+            {% if search_query %}
+                Search Results
+                {% if search_query.location %} for "{{ search_query.location }}"{% endif %}
+            {% else %}
+                Browse Warehouses
+            {% endif %}
+        </h1>
+
+        {% if search_query %}
+        <div class="search-summary card">
+            <div class="search-params">
+                <h4><i class="fas fa-filter"></i> Search Filters</h4>
+                <div class="filter-tags">
+                    {% if search_query.location %}
+                    <span class="filter-tag"><i class="fas fa-map-marker-alt"></i> {{ search_query.location }}</span>
+                    {% endif %}
+                    
+                    {% if search_query.min_area %}
+                    <span class="filter-tag"><i class="fas fa-expand-arrows-alt"></i> Min: {{ search_query.min_area }} sqft</span>
+                    {% endif %}
+                    
+                    {% if search_query.max_price %}
+                    <span class="filter-tag"><i class="fas fa-rupee-sign"></i> Max: ₹{{ search_query.max_price }}</span>
+                    {% endif %}
+                </div>
+                <a href="{{ url_for('warehouse_search') }}" class="btn btn-secondary btn-sm mt-2">
+                    <i class="fas fa-search"></i> New Search
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="warehouse-filters card">
+            <form action="{{ url_for('warehouse_list') }}" method="GET" class="filter-form" x-data="{advancedFilters: false}">
+                <div class="filter-basic">
+                    <div class="filter-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" placeholder="City, state, or zip" value="{{ request.query_params.get('location', '') }}">
                     </div>
-                </form>
-            </section>
-            
-            <div class="warehouse-grid">
-                {% for warehouse in warehouses %}
-                <div class="card">
-                    <div class="warehouse-image">
-                        <span><i class="fas fa-warehouse fa-3x"></i></span>
+                    
+                    <div class="filter-group">
+                        <label for="min_size">Min Size (sq.ft)</label>
+                        <input type="number" id="min_size" name="min_size" placeholder="Minimum" value="{{ request.query_params.get('min_size', '') }}">
                     </div>
-                    <div class="warehouse-details">
-                        <h3>{{ warehouse.title }}</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> {{ warehouse.location }}</p>
-                        <p><i class="fas fa-ruler-combined"></i> {{ warehouse.area_sqft }} sqft</p>
-                        <p class="warehouse-price">₹{{ warehouse.price_per_month }} / month</p>
-                        
-                        <div class="facility-tags">
-                            {% for facility in warehouse.facilities %}
-                            <span class="facility-tag">{{ facility }}</span>
-                            {% endfor %}
+                    
+                    <div class="filter-group">
+                        <label for="max_price">Max Price (₹/sq.ft)</label>
+                        <input type="number" id="max_price" name="max_price" placeholder="Maximum" value="{{ request.query_params.get('max_price', '') }}">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary wolf-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                
+                <div class="filter-toggle">
+                    <button type="button" @click="advancedFilters = !advancedFilters" class="btn btn-secondary">
+                        <span x-text="advancedFilters ? 'Hide Advanced Filters' : 'Show Advanced Filters'"></span>
+                        <i class="fas" :class="advancedFilters ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                </div>
+                
+                <div class="filter-advanced" x-show="advancedFilters" x-transition>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="features">Features</label>
+                            <select id="features" name="features" multiple>
+                                <option value="climate_control" {% if 'climate_control' in request.query_params.getlist('features') %}selected{% endif %}>Climate Control</option>
+                                <option value="loading_dock" {% if 'loading_dock' in request.query_params.getlist('features') %}selected{% endif %}>Loading Dock</option>
+                                <option value="security" {% if 'security' in request.query_params.getlist('features') %}selected{% endif %}>24/7 Security</option>
+                                <option value="office_space" {% if 'office_space' in request.query_params.getlist('features') %}selected{% endif %}>Office Space</option>
+                            </select>
                         </div>
                         
-                        <a href="/warehouse/details/{{ warehouse.id }}" class="btn btn-primary btn-block"><i class="fas fa-info-circle"></i> View Details</a>
+                        <div class="filter-group">
+                            <label for="availability">Availability</label>
+                            <select id="availability" name="availability">
+                                <option value="">Any</option>
+                                <option value="immediate" {% if request.query_params.get('availability') == 'immediate' %}selected{% endif %}>Immediate</option>
+                                <option value="30days" {% if request.query_params.get('availability') == '30days' %}selected{% endif %}>Within 30 days</option>
+                                <option value="60days" {% if request.query_params.get('availability') == '60days' %}selected{% endif %}>Within 60 days</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="sort">Sort By</label>
+                            <select id="sort" name="sort">
+                                <option value="newest" {% if request.query_params.get('sort') == 'newest' %}selected{% endif %}>Newest</option>
+                                <option value="price_low" {% if request.query_params.get('sort') == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                                <option value="price_high" {% if request.query_params.get('sort') == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                                <option value="size_low" {% if request.query_params.get('sort') == 'size_low' %}selected{% endif %}>Size: Small to Large</option>
+                                <option value="size_high" {% if request.query_params.get('sort') == 'size_high' %}selected{% endif %}>Size: Large to Small</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                {% endfor %}
+            </form>
+        </div>
+        {% endif %}
+        
+        {% if not current_user and not search_query %}
+        <div class="login-gate wolf-watermark mt-4">
+            <h3><i class="fas fa-info-circle"></i> Limited Results</h3>
+            <p>You're viewing limited warehouse results as a guest. <a href="{{ url_for('login') }}">Login</a> to see all available warehouses.</p>
+        </div>
+        {% endif %}
+        
+        {% if not warehouses %}
+        <div class="no-results mt-4">
+            <div class="card text-center py-5">
+                <i class="fas fa-search fa-3x mb-3" style="color: var(--text-light);"></i>
+                <h3>No Warehouses Found</h3>
+                <p>Try adjusting your search filters to find more results.</p>
+                
+                {% if search_query %}
+                <a href="{{ url_for('warehouse_search') }}" class="btn btn-primary wolf-btn mt-3">
+                    <i class="fas fa-search"></i> Try a New Search
+                </a>
+                {% endif %}
             </div>
-            
-            {% if not warehouses %}
-            <div class="no-results">
-                <i class="fas fa-exclamation-circle fa-3x" style="color: var(--gray); margin-bottom: 1rem;"></i>
-                <h3>No warehouses found</h3>
-                <p>Try adjusting your search filters or <a href="/warehouse/add">list a warehouse</a> yourself.</p>
+        </div>
+        {% else %}
+        <div class="grid-3 mt-4">
+            {% for warehouse in warehouses %}
+            <div class="warehouse-card card fade-in">
+                <img src="{{ url_for('static', path='/img/placeholder1.jpg') }}" alt="{{ warehouse.title }}" onerror="this.src='https://via.placeholder.com/400x250?text=Warehouse'">
+                <div class="warehouse-card-content">
+                    <h3>{{ warehouse.title }}</h3>
+                    <div class="warehouse-location">
+                        <i class="fas fa-map-marker-alt"></i> {{ warehouse.location }}
+                    </div>
+                    <div class="warehouse-specs">
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">{{ warehouse.area_sqft }}</span>
+                            <span class="warehouse-spec-label">sq.ft</span>
+                        </div>
+                        {% if warehouse.facilities %}
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">{{ warehouse.facilities|length }}</span>
+                            <span class="warehouse-spec-label">Features</span>
+                        </div>
+                        {% endif %}
+                        {% if warehouse.availability %}
+                        <div class="warehouse-spec">
+                            <span class="warehouse-spec-value">Available</span>
+                            <span class="warehouse-spec-label">Now</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="warehouse-price">
+                        ₹{{ warehouse.price_per_month }}<span>/month</span>
+                    </div>
+                    
+                    <div class="warehouse-facilities">
+                        {% for facility in warehouse.facilities[:3] %}
+                        <span class="facility-tag">{{ facility }}</span>
+                        {% endfor %}
+                        {% if warehouse.facilities|length > 3 %}
+                        <span class="facility-tag">+{{ warehouse.facilities|length - 3 }} more</span>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="{{ url_for('warehouse_details', warehouse_id=warehouse.id) }}" class="btn btn-primary btn-block wolf-btn">View Details</a>
+                </div>
             </div>
+            {% endfor %}
+        </div>
+        
+        <div class="results-summary mt-4">
+            <p>Showing {{ warehouses|length }} warehouse{% if warehouses|length != 1 %}s{% endif %}</p>
+            {% if search_query %}
+            <a href="{{ url_for('warehouse_search') }}" class="btn btn-primary wolf-btn">
+                <i class="fas fa-search"></i> New Search
+            </a>
             {% endif %}
         </div>
-    </main>
+        
+        {% if pagination is defined %}
+        <div class="pagination mt-4">
+            <ul>
+                {% if pagination.has_prev %}
+                <li><a href="{{ url_for('warehouse_list', page=pagination.prev_num, **request.query_params) }}"><i class="fas fa-chevron-left"></i> Previous</a></li>
+                {% endif %}
+                
+                {% for page in pagination.iter_pages() %}
+                    {% if page %}
+                        {% if page != pagination.page %}
+                        <li><a href="{{ url_for('warehouse_list', page=page, **request.query_params) }}">{{ page }}</a></li>
+                        {% else %}
+                        <li class="active"><span>{{ page }}</span></li>
+                        {% endif %}
+                    {% else %}
+                        <li><span>...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                <li><a href="{{ url_for('warehouse_list', page=pagination.next_num, **request.query_params) }}">Next <i class="fas fa-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .search-summary {
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
     
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Warewolf</h3>
-                <p>Your trusted partner in finding the perfect warehouse space.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/warehouse/">Browse Warehouses</a></li>
-                    <li><a href="/auth/login">Login</a></li>
-                    <li><a href="/auth/register">Register</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p><i class="fas fa-map-marker-alt"></i> 123 Business Park, New Delhi, India</p>
-                <p><i class="fas fa-phone"></i> +91 9876543210</p>
-                <p><i class="fas fa-envelope"></i> info@warewolf.com</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2023 Warewolf. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-</html> 
+    .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .filter-tag {
+        background-color: rgba(74, 95, 193, 0.1);
+        color: var(--accent);
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .warehouse-facilities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+    
+    .facility-tag {
+        background-color: rgba(74, 95, 193, 0.1);
+        color: var(--accent);
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .results-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Additional filtering logic can be added here
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('warehouseFilters', () => ({
+            resetFilters() {
+                const form = document.querySelector('.filter-form');
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    if (input.type === 'text' || input.type === 'number') {
+                        input.value = '';
+                    } else if (input.type === 'select-one') {
+                        input.selectedIndex = 0;
+                    } else if (input.type === 'select-multiple') {
+                        for (let i = 0; i < input.options.length; i++) {
+                            input.options[i].selected = false;
+                        }
+                    }
+                });
+                form.submit();
+            }
+        }));
+    });
+</script>
+{% endblock %} 
